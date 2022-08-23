@@ -1,34 +1,42 @@
 import {TasksStateType} from '../App';
 
 
-export type ActionsType1 = {
-    type: '1',
-    id: string
+export type RemoveTaskActionsType = {
+    type: 'REMOVE-TASK',
+    todolistId: string
+    taskID:string
 }
-export type ActionsType2 = {
-    type: '2',
-    title: string
+export type AddTaskActionsType = {
+    type: 'ADD-TASK',
+    title: string,
+    todolistId: string
 }
 
 
-type ActionsType = ActionsType1 | ActionsType2
+type ActionsType = RemoveTaskActionsType | AddTaskActionsType
 
 export const tasksReducer = (state:TasksStateType, action: ActionsType):TasksStateType => {
     switch (action.type) {
-        case "1":{
-            return {...state}
+        case "REMOVE-TASK":{
+            const stateCopy={...state}
+            const tasks=state[action.todolistId]
+            const filteredTasks=tasks.filter(t=> t.id !== action.taskID)
+            stateCopy[action.todolistId]=filteredTasks
+            return stateCopy
         }
-        case "2":{
-            return {...state}
+        case "ADD-TASK":{
+            const stateCopy={...state}
+
+            return stateCopy
         }
         default:
             throw new Error("I don't understand this type")
     }
 }
 
-export const action1AC = (todolistId: string): ActionsType1 => {
-    return { type: '1', id: todolistId}
+export const removeTaskAC = (taskID:string,todolistId: string): RemoveTaskActionsType => {
+    return {type: 'REMOVE-TASK',taskID,  todolistId}
 }
-export const action2AC = (title: string): ActionsType2 => {
-    return { type: '2', title: title}
+export const addTaskAC = (title: string, todolistId: string): AddTaskActionsType => {
+    return { type: 'ADD-TASK',title, todolistId}
 }
